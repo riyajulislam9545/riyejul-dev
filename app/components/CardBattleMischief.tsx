@@ -300,15 +300,15 @@ const CAT_W = 34;
 const CAT_H = 32;
 const KID_W = 34;
 const KID_H = 46;
-const TARGET_DISTANCE = 135; // ~1.55x scaled distance for generous breathing room without card overflow
+const TARGET_DISTANCE = 135; // Fixed constant distance between the two characters
 
 export default function CardBattleMischief(): React.JSX.Element | null {
   const [mounted, setMounted] = useState(false);
   const [enabled, setEnabled] = useState(true);
 
-  // Document-relative pixel positions (pageX, pageY)
+  // Document-relative pixel positions (pageX, pageY) - initialized at fixed constant distance
   const [catPos, setCatPos] = useState({ x: 200, y: 300, facingLeft: false });
-  const [kidPos, setKidPos] = useState({ x: 110, y: 300, facingLeft: false });
+  const [kidPos, setKidPos] = useState({ x: 200 - TARGET_DISTANCE, y: 300, facingLeft: false });
 
   // Poses
   const [pubgPose, setPubgPose] = useState<"RUN" | "KNEEL_FIRE" | "KNOCKED_DOWN">("RUN");
@@ -324,7 +324,7 @@ export default function CardBattleMischief(): React.JSX.Element | null {
 
   // Synchronous State References to eliminate re-render loops completely
   const catPosRef = useRef({ x: 200, y: 300, facingLeft: false });
-  const kidPosRef = useRef({ x: 110, y: 300, facingLeft: false });
+  const kidPosRef = useRef({ x: 200 - TARGET_DISTANCE, y: 300, facingLeft: false });
   const stageRef = useRef<BattleStage>("CHASE");
   const bulletsRef = useRef<Bullet[]>([]);
   const stoneRef = useRef<Stone | null>(null);
@@ -339,15 +339,15 @@ export default function CardBattleMischief(): React.JSX.Element | null {
   });
   const bulletIdCounter = useRef(0);
   const sparkIdCounter = useRef(0);
-  const catLocalXRef = useRef(100);
+  const kidOffsetRef = useRef(0);
   const moveDirRef = useRef<1 | -1>(1);
 
-  // Helper to discover all tagged cards on the website
+  // Helper to discover all tagged cards on the website that can fit the battle
   const getAllCards = useCallback((): HTMLElement[] => {
     if (typeof window === "undefined") return [];
     return Array.from(document.querySelectorAll<HTMLElement>("[data-battle-card]")).filter((el) => {
       const rect = el.getBoundingClientRect();
-      return rect.width > 30 && rect.height > 20 && el.offsetParent !== null;
+      return rect.width >= TARGET_DISTANCE + CAT_W && rect.height > 20 && el.offsetParent !== null;
     });
   }, []);
 
@@ -397,16 +397,19 @@ export default function CardBattleMischief(): React.JSX.Element | null {
     const surfaceY = pageY + 3;
 
     const PAD = 14;
-    const minX = pageX + PAD;
-    const maxX = pageX + rect.width - PAD;
-    const usable = Math.max(maxX - minX, 80);
-    const actualDist = Math.min(TARGET_DISTANCE, Math.max(50, usable - KID_W - CAT_W - 8));
+    const minCardX = pageX + PAD;
+    const maxCardX = pageX + rect.width - PAD;
 
-    const targetCatX = Math.min(minX + actualDist + 20, maxX - CAT_W);
-    const targetKidX = Math.max(minX, targetCatX - actualDist);
+    const minKidX = minCardX;
+    const maxKidX = Math.max(minKidX, maxCardX - CAT_W - TARGET_DISTANCE);
+    const patrolRange = Math.max(0, maxKidX - minKidX);
 
-    catLocalXRef.current = targetCatX - pageX;
+    const initialKidOffset = Math.min(20, patrolRange);
+    kidOffsetRef.current = initialKidOffset;
     moveDirRef.current = 1;
+
+    const targetKidX = minKidX + initialKidOffset;
+    const targetCatX = targetKidX + TARGET_DISTANCE;
 
     if (animated) {
       leapDataRef.current = {
@@ -452,7 +455,7 @@ export default function CardBattleMischief(): React.JSX.Element | null {
     }
   }, [getClosestCard, moveToCard]);
 
-  // Scroll Listener: Transfer fight immediately to the closest card on screen
+  // Scroll & Resize Listener: Transfer fight immediately to the closest card on screen
   useEffect(() => {
     if (!mounted || !enabled) return;
 
@@ -471,7 +474,11 @@ export default function CardBattleMischief(): React.JSX.Element | null {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, [mounted, enabled, getClosestCard, moveToCard]);
 
   // Main 60FPS Battle & Animation Loop (Decoupled from state updates so it never causes infinite re-renders)
@@ -506,36 +513,37 @@ export default function CardBattleMischief(): React.JSX.Element | null {
         const leapDuration = 0.65;
         const t = Math.min(1, elapsed / leapDuration);
 
-        // Cat leaps in high arc
-        const catArc = Math.sin(t * Math.PI) * 110;
+        // Horizontal positions maintain strictly constant TARGET_DISTANCE throughout the leap
         const curCatX =
           leapDataRef.current.catStart.x +
           (leapDataRef.current.catEnd.x - leapDataRef.current.catStart.x) * t;
+        const curKidX =
+          leapDataRef.current.kidStart.x +
+          (leapDataRef.current.kidEnd.x - leapDataRef.current.kidStart.x) * t;
+
+        // Cat leaps in high arc, Kid leaps in lower arc
+        const catArc = Math.sin(t * Math.PI) * 110;
+        const kidArc = Math.sin(t * Math.PI) * 55;
+
         const curCatY =
           leapDataRef.current.catStart.y +
           (leapDataRef.current.catEnd.y - leapDataRef.current.catStart.y) * t -
           catArc;
-
-        // Kid runs/trips forward in lower arc
-        const kidT = Math.max(0, Math.min(1, (elapsed - 0.08) / (leapDuration - 0.08)));
-        const kidArc = Math.sin(kidT * Math.PI) * 55;
-        const curKidX =
-          leapDataRef.current.kidStart.x +
-          (leapDataRef.current.kidEnd.x - leapDataRef.current.kidStart.x) * kidT;
         const curKidY =
           leapDataRef.current.kidStart.y +
-          (leapDataRef.current.kidEnd.y - leapDataRef.current.kidStart.y) * kidT -
+          (leapDataRef.current.kidEnd.y - leapDataRef.current.kidStart.y) * t -
           kidArc;
 
+        const isLeapingLeft = leapDataRef.current.catEnd.x < leapDataRef.current.catStart.x;
         const newCat = {
           x: curCatX,
           y: curCatY,
-          facingLeft: leapDataRef.current.catEnd.x < leapDataRef.current.catStart.x,
+          facingLeft: isLeapingLeft,
         };
         const newKid = {
           x: curKidX,
           y: curKidY,
-          facingLeft: leapDataRef.current.kidEnd.x < leapDataRef.current.kidStart.x,
+          facingLeft: isLeapingLeft,
         };
 
         catPosRef.current = newCat;
@@ -575,37 +583,35 @@ export default function CardBattleMischief(): React.JSX.Element | null {
         const PAD = 14;
         const minCardX = pageX + PAD;
         const maxCardX = pageX + rect.width - PAD;
-        const usableWidth = Math.max(maxCardX - minCardX, 80);
-        // Distance dynamically tailored to card width: never overflows borders
-        const dist = Math.min(TARGET_DISTANCE, Math.max(50, usableWidth - KID_W - CAT_W - 8));
 
-        // STAGE 1: CHASE (Kid runs behind Cat, maintaining constant spacing)
+        // STAGE 1: CHASE (Kid runs behind Cat, maintaining strictly constant distance)
         if (currentStage === "CHASE") {
           setPubgPose("RUN");
           setCatPose("RUN");
           setMuzzleFlash(false);
 
-          const speed = 75 * dt;
-          catLocalXRef.current += moveDirRef.current * speed;
+          const minKidX = minCardX;
+          const maxKidX = Math.max(minKidX, maxCardX - CAT_W - TARGET_DISTANCE);
+          const patrolRange = Math.max(0, maxKidX - minKidX);
 
-          const minLocal = dist + 8;
-          const maxLocal = usableWidth;
+          if (patrolRange > 0) {
+            const speed = 75 * dt;
+            kidOffsetRef.current += moveDirRef.current * speed;
 
-          if (catLocalXRef.current >= maxLocal) {
-            catLocalXRef.current = maxLocal;
-            moveDirRef.current = -1;
-          } else if (catLocalXRef.current <= minLocal) {
-            catLocalXRef.current = minLocal;
-            moveDirRef.current = 1;
+            if (kidOffsetRef.current >= patrolRange) {
+              kidOffsetRef.current = patrolRange;
+              moveDirRef.current = -1;
+            } else if (kidOffsetRef.current <= 0) {
+              kidOffsetRef.current = 0;
+              moveDirRef.current = 1;
+            }
+          } else {
+            kidOffsetRef.current = 0;
           }
 
-          let curCatX = minCardX + catLocalXRef.current;
-          let curKidX =
-            moveDirRef.current === 1 ? curCatX - dist : curCatX + dist;
-
-          // STRICT CLAMP: Characters will NEVER cross the card edge
-          curCatX = Math.max(minCardX, Math.min(curCatX, maxCardX - CAT_W));
-          curKidX = Math.max(minCardX, Math.min(curKidX, maxCardX - KID_W));
+          const curKidX = minKidX + kidOffsetRef.current;
+          // Absolute guarantee: Cat is ALWAYS at constant TARGET_DISTANCE from Kid
+          const curCatX = curKidX + TARGET_DISTANCE;
 
           const newCat = {
             x: curCatX,
@@ -629,6 +635,14 @@ export default function CardBattleMischief(): React.JSX.Element | null {
             setStage("KNEEL_FIRE");
             setPubgPose("KNEEL_FIRE");
             stageStartTimeRef.current = now;
+
+            const combatCat = { ...catPosRef.current, facingLeft: true };
+            const combatKid = { ...kidPosRef.current, facingLeft: false };
+            catPosRef.current = combatCat;
+            kidPosRef.current = combatKid;
+            setCatPos(combatCat);
+            setKidPos(combatKid);
+
             setStatusBubble({
               text: "*KNEEL & FIRE!*",
               x: curKidX + 17,

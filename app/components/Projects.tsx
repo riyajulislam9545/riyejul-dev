@@ -19,7 +19,7 @@ const featuredProjects: Project[] = [
     description:
       "A high-stakes competitive esports tournament platform built for modern gamers. Features live tournament registrations, team matchmaking, dynamic brackets, and automated instant cash payout workflows via bKash and Nagad. Crafted with responsive, high-performance UI and dark cyber gaming aesthetic.",
     link: "https://ragxion--riyajulislam954.replit.app",
-    image: "/projects/ragxion.jpg",
+    image: "/projects/ragxion.png",
     tags: ["React", "Next.js", "Node.js", "Tailwind CSS", "REST APIs", "Fintech Integration"],
     neonAccent: "#00F5FF",
   },
@@ -155,7 +155,6 @@ export default function Projects(): React.JSX.Element {
                           fill
                           sizes="(max-width: 1024px) 100vw, 50vw"
                           className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                          priority={index === 0}
                         />
 
                         {/* Liquid Glaze on hover */}
