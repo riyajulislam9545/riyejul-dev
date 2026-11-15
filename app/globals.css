@@ -124,6 +124,58 @@ img {
   animation: loading-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+/* Footer "RIYAJUL" Sweeping Beam & Shadow Glow */
+@keyframes footer-light-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.footer-glowing-name {
+  background: linear-gradient(
+    90deg,
+    #161722 0%,
+    #252836 25%,
+    #38bdf8 44%,
+    #ffffff 50%,
+    #c084fc 56%,
+    #252836 75%,
+    #161722 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: footer-light-sweep 6s ease-in-out infinite;
+  will-change: background-position;
+}
+
+@keyframes footer-ambient-sweep {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(110%);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(-110%);
+    opacity: 0.45;
+  }
+}
+
+.animate-footer-ambient-sweep {
+  animation: footer-ambient-sweep 6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 /* Liquid Glassmorphism Core */
 .liquid-glass {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);

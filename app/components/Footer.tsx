@@ -239,11 +239,31 @@ export default function Footer(): React.JSX.Element {
           </div>
         </div>
 
-        {/* Footer Bottom Bar */}
-        <div className="text-center pt-10 border-t border-white/[0.06] mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/55">
-          <p>© {new Date().getFullYear()} MD RIYAJUL ISLAM. All rights reserved.</p>
-          <p className="text-white/45">
-            Designed &amp; Built with Next.js, TypeScript &amp; Tailwind CSS.
+        {/* Massive Name Display with Dynamic Sweeping Glow & Shadow */}
+        <div className="relative w-full overflow-hidden select-none pointer-events-none mt-12 sm:mt-16 mb-6 text-center">
+          {/* Synchronized Ambient Soft Glow drifting behind text */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            aria-hidden="true"
+          >
+            <div className="w-[32%] h-[75%] rounded-full bg-gradient-to-r from-cyan-400/25 via-purple-500/30 to-pink-500/20 blur-[55px] animate-footer-ambient-sweep" />
+          </div>
+
+          <h2 className="relative inline-block text-[15vw] sm:text-[17vw] lg:text-[18vw] font-black tracking-tighter leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+            RIYAJUL
+          </h2>
+        </div>
+
+        {/* Footer Bottom Bar matching Screenshot */}
+        <div className="pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] sm:text-xs text-white/50">
+          <div className="flex items-center gap-2.5">
+            <div className="w-5 h-5 rounded-full border border-white/20 bg-black/80 flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0">
+              N
+            </div>
+            <p>© {new Date().getFullYear()} MD RIYAJUL ISLAM. All rights reserved.</p>
+          </div>
+          <p className="text-white/40">
+            Designed &amp; Engineered with Next.js, TypeScript &amp; Tailwind CSS.
           </p>
         </div>
       </div>
