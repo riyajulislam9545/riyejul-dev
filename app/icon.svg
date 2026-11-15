@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#150728" />
+      <stop offset="60%" stop-color="#0a0214" />
+      <stop offset="100%" stop-color="#04010a" />
+    </radialGradient>
+
+    <!-- Border Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F5FF" />
+      <stop offset="45%" stop-color="#38BDF8" />
+      <stop offset="75%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+
+    <!-- Cyan Bracket Gradient -->
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E0F2FE" />
+      <stop offset="40%" stop-color="#00F5FF" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- Purple Bracket Gradient -->
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5D0FE" />
+      <stop offset="40%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+
+    <!-- Platinum Silver Letter Gradient -->
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#F1F5F9" />
+      <stop offset="70%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="cyanGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="purpleGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Ambient Center Flare -->
+    <radialGradient id="ambientFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00F5FF" stop-opacity="0.25" />
+      <stop offset="50%" stop-color="#A855F7" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Ambient Glow -->
+  <circle cx="256" cy="256" r="230" fill="url(#ambientFlare)" />
+
+  <!-- Outer Rounded Tech Squircle Base -->
+  <rect
+    x="20"
+    y="20"
+    width="472"
+    height="472"
+    rx="130"
+    ry="130"
+    fill="url(#bgGrad)"
+    stroke="url(#borderGrad)"
+    stroke-width="14"
+  />
+
+  <!-- Subtle Inner Glass Highlight -->
+  <rect
+    x="34"
+    y="34"
+    width="444"
+    height="444"
+    rx="116"
+    ry="116"
+    fill="none"
+    stroke="#ffffff"
+    stroke-opacity="0.08"
+    stroke-width="2"
+  />
+
+  <!-- Left Code Bracket "<" in Neon Cyan -->
+  <path
+    d="M 148 145 L 72 256 L 148 367"
+    fill="none"
+    stroke="url(#cyanGrad)"
+    stroke-width="32"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#cyanGlow)"
+  />
+
+  <!-- Right Code Bracket ">" in Neon Purple -->
+  <path
+    d="M 364 145 L 440 256 L 364 367"
+    fill="none"
+    stroke="url(#purpleGrad)"
+    stroke-width="32"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#purpleGlow)"
+  />
+
+  <!-- Center Monogram "R" in High-Contrast Platinum Silver -->
+  <!-- Precision vector paths with inner cutout (fill-rule="evenodd") -->
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M 198 142 
+       H 282 
+       C 324 142, 348 164, 348 206 
+       C 348 240, 324 262, 286 266 
+       L 352 370 
+       H 298 
+       L 242 276 
+       H 238 
+       V 370 
+       H 198 
+       V 142 
+       Z 
+       M 238 180 
+       V 238 
+       H 276 
+       C 296 238, 308 228, 308 209 
+       C 308 190, 296 180, 276 180 
+       H 238 
+       Z"
+    fill="url(#silverGrad)"
+    filter="drop-shadow(0 6px 18px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.45))"
+  />
+
+  <!-- Subtle Top Accent Code Dot -->
+  <circle
+    cx="256"
+    cy="92"
+    r="7"
+    fill="#00F5FF"
+    filter="url(#cyanGlow)"
+  />
+</svg>
