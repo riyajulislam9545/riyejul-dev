@@ -240,7 +240,7 @@ export default function Footer(): React.JSX.Element {
         </div>
 
         {/* Massive Name Display with Dynamic Sweeping Glow & Shadow */}
-        <div className="relative w-full overflow-hidden select-none pointer-events-none mt-12 sm:mt-16 mb-6 text-center">
+        <div className="relative w-full overflow-visible select-none pointer-events-none mt-12 sm:mt-16 mb-6 text-center flex items-center justify-center">
           {/* Synchronized Ambient Soft Glow drifting behind text */}
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -249,7 +249,7 @@ export default function Footer(): React.JSX.Element {
             <div className="w-[32%] h-[75%] rounded-full bg-gradient-to-r from-cyan-400/25 via-purple-500/30 to-pink-500/20 blur-[55px] animate-footer-ambient-sweep" />
           </div>
 
-          <h2 className="relative inline-block text-[15vw] sm:text-[17vw] lg:text-[18vw] font-black tracking-tighter leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+          <h2 className="relative inline-block text-[11vw] sm:text-[12.5vw] md:text-[13vw] lg:text-[8rem] xl:text-[9.5rem] font-black tracking-tight leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
             RIYAJUL
           </h2>
         </div>
