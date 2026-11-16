@@ -246,10 +246,10 @@ export default function Footer(): React.JSX.Element {
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden="true"
           >
-            <div className="w-[32%] h-[75%] rounded-full bg-gradient-to-r from-cyan-400/25 via-purple-500/30 to-pink-500/20 blur-[55px] animate-footer-ambient-sweep" />
+            <div className="w-[38%] h-[85%] rounded-full bg-gradient-to-r from-cyan-400/25 via-purple-500/30 to-pink-500/20 blur-[60px] animate-footer-ambient-sweep" />
           </div>
 
-          <h2 className="relative inline-block text-[11vw] sm:text-[12.5vw] md:text-[13vw] lg:text-[8rem] xl:text-[9.5rem] font-black tracking-tight leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+          <h2 className="relative inline-block text-[13.5vw] sm:text-[14.5vw] md:text-[15.5vw] lg:text-[11rem] xl:text-[12.5rem] font-black tracking-tighter leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
             RIYAJUL
           </h2>
         </div>
