@@ -274,13 +274,13 @@ html.light main {
 }
 
 /* ==========================================================================
-   CIRCULAR REVEAL VIEW TRANSITIONS (Icon-Originating Matte / Misty Wave)
-   Expands in a soft, feathered circular wave from the clicked icon
+   CIRCULAR REVEAL VIEW TRANSITIONS (Feathered, Matte, Smoky & Pale Edge)
+   Soft, smoky grayish-faded feathered mask at 60 FPS
    ========================================================================== */
 
 @property --reveal-radius {
   syntax: "<length>";
-  inherits: true;
+  inherits: false;
   initial-value: 0px;
 }
 
@@ -299,22 +299,22 @@ html.light main {
   -webkit-mask-image: radial-gradient(
     circle var(--reveal-radius, 0px) at var(--click-x, 50%) var(--click-y, 0px),
     #000 0%,
-    #000 max(0px, calc(var(--reveal-radius, 0px) - 95px)),
-    rgba(0, 0, 0, 0.75) max(0px, calc(var(--reveal-radius, 0px) - 55px)),
-    rgba(0, 0, 0, 0.3) max(0px, calc(var(--reveal-radius, 0px) - 20px)),
+    #000 max(0px, calc(var(--reveal-radius, 0px) - 85px)),
+    rgba(0, 0, 0, 0.55) max(0px, calc(var(--reveal-radius, 0px) - 45px)),
+    rgba(0, 0, 0, 0.18) max(0px, calc(var(--reveal-radius, 0px) - 15px)),
     transparent var(--reveal-radius, 0px)
   );
   mask-image: radial-gradient(
     circle var(--reveal-radius, 0px) at var(--click-x, 50%) var(--click-y, 0px),
     #000 0%,
-    #000 max(0px, calc(var(--reveal-radius, 0px) - 95px)),
-    rgba(0, 0, 0, 0.75) max(0px, calc(var(--reveal-radius, 0px) - 55px)),
-    rgba(0, 0, 0, 0.3) max(0px, calc(var(--reveal-radius, 0px) - 20px)),
+    #000 max(0px, calc(var(--reveal-radius, 0px) - 85px)),
+    rgba(0, 0, 0, 0.55) max(0px, calc(var(--reveal-radius, 0px) - 45px)),
+    rgba(0, 0, 0, 0.18) max(0px, calc(var(--reveal-radius, 0px) - 15px)),
     transparent var(--reveal-radius, 0px)
   );
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  animation: theme-circular-reveal 750ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: theme-circular-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
 }
 
 @keyframes theme-circular-reveal {
@@ -326,6 +326,16 @@ html.light main {
   }
 }
 
+/* 60 FPS GPU-Accelerated Matte Halo Ring */
+.matte-halo-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
 /* Button Shockwave Ripple Ring on Click */
 @keyframes button-ripple-ring {
   0% {
@@ -334,24 +344,24 @@ html.light main {
     box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.8), inset 0 0 10px rgba(168, 85, 247, 0.6);
   }
   100% {
-    transform: scale(2.8);
+    transform: scale(2.4);
     opacity: 0;
-    box-shadow: 0 0 35px 20px rgba(0, 245, 255, 0), inset 0 0 20px rgba(168, 85, 247, 0);
+    box-shadow: 0 0 30px 15px rgba(0, 245, 255, 0), inset 0 0 20px rgba(168, 85, 247, 0);
   }
 }
 
 .animate-ripple-ring {
-  animation: button-ripple-ring 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: button-ripple-ring 0.48s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
 /* Icon Switch Animation */
 @keyframes icon-fade-in-spin {
   0% {
     opacity: 0;
-    transform: rotate(-100deg) scale(0.6);
+    transform: rotate(-90deg) scale(0.65);
   }
   60% {
-    transform: rotate(10deg) scale(1.1);
+    transform: rotate(10deg) scale(1.08);
   }
   100% {
     opacity: 1;
@@ -360,40 +370,12 @@ html.light main {
 }
 
 .animate-icon-switch {
-  animation: icon-fade-in-spin 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: icon-fade-in-spin 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Smooth full-page transition class active during theme switch */
-html.theme-transition,
-html.theme-transition body,
-html.theme-transition main,
-html.theme-transition header,
-html.theme-transition footer,
-html.theme-transition section,
-html.theme-transition div:not([class*="animate-"]),
-html.theme-transition p,
-html.theme-transition h1,
-html.theme-transition h2,
-html.theme-transition h3,
-html.theme-transition h4,
-html.theme-transition span,
-html.theme-transition a,
-html.theme-transition button,
-html.theme-transition svg {
-  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              fill 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-              stroke 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* Base smooth transitions for key structural elements */
-body, main, header, footer, section, .liquid-glass, .liquid-glass-card, .liquid-glass-pill, .skill-card-inner {
-  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+/* Base transitions for key structural elements */
+body, main, header {
+  transition: background-color 0.3s ease;
 }
 
 /* Header & Navigation in Light Mode */

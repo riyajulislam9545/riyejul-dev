@@ -24,53 +24,21 @@ export default function Header(): React.JSX.Element {
     const x = e.clientX || (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
     const y = e.clientY || (rect ? rect.top + rect.height / 2 : 40);
 
-    // 2. Calculate the maximum distance to the farthest viewport corner with padding
+    // 2. Calculate the maximum distance to the farthest viewport corner with buffer
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
-    const targetRadius = Math.ceil(endRadius + 140);
+    const targetRadius = Math.ceil(endRadius + 120);
 
-    // Set CSS variables for circular reveal with soft matte feathered mask
+    // Set CSS variables for feathered radial gradient mask
     document.documentElement.style.setProperty("--click-x", `${x}px`);
     document.documentElement.style.setProperty("--click-y", `${y}px`);
     document.documentElement.style.setProperty("--click-radius", `${targetRadius}px`);
 
     // Trigger button shockwave ring
     setRippling(true);
-    setTimeout(() => setRippling(false), 700);
-
-    const isCurrentlyLight = document.documentElement.classList.contains("light");
-
-    // Ethereal matte misty shockwave aura traveling along the circular wave edge
-    const mist = document.createElement("div");
-    const mistSize = targetRadius * 2;
-    mist.className = "pointer-events-none fixed z-[999999] rounded-full";
-    mist.style.left = `${x - mistSize / 2}px`;
-    mist.style.top = `${y - mistSize / 2}px`;
-    mist.style.width = `${mistSize}px`;
-    mist.style.height = `${mistSize}px`;
-    mist.style.borderRadius = "50%";
-    mist.style.transform = "scale(0)";
-    mist.style.willChange = "transform, opacity";
-    mist.style.background = isCurrentlyLight
-      ? "radial-gradient(circle, transparent 0%, transparent 86%, rgba(13, 4, 26, 0.45) 93%, rgba(168, 85, 247, 0.5) 96%, transparent 100%)"
-      : "radial-gradient(circle, transparent 0%, transparent 86%, rgba(248, 250, 252, 0.55) 93%, rgba(6, 182, 212, 0.6) 96%, transparent 100%)";
-    mist.style.filter = "blur(18px)";
-    mist.style.transition = "transform 750ms cubic-bezier(0.22, 1, 0.36, 1), opacity 250ms ease 550ms";
-
-    document.body.appendChild(mist);
-
-    requestAnimationFrame(() => {
-      mist.style.transform = "scale(1)";
-      mist.style.opacity = "0";
-    });
-
-    setTimeout(() => {
-      if (mist.parentNode) {
-        mist.parentNode.removeChild(mist);
-      }
-    }, 850);
+    setTimeout(() => setRippling(false), 500);
 
     const applyThemeChange = () => {
       const isLight = document.documentElement.classList.toggle("light");
@@ -85,10 +53,8 @@ export default function Header(): React.JSX.Element {
 
     const hasViewTransition = "startViewTransition" in document;
 
-    // Use native View Transitions API for GPU-accelerated feathered circular reveal
+    // Use native View Transitions API for locked 60-120 FPS GPU-accelerated feathered reveal
     if (hasViewTransition) {
-      document.documentElement.classList.add("view-transition-circular");
-
       const docWithVT = document as unknown as {
         startViewTransition: (cb: () => void) => {
           ready: Promise<void>;
@@ -100,7 +66,9 @@ export default function Header(): React.JSX.Element {
         applyThemeChange();
       });
 
+      // 60-120 FPS GPU-Composited Mask Expansion + Smoky Pale Matte Halo Ring
       transition.ready.then(() => {
+        // 1. Animate mask radius with WAAPI
         try {
           document.documentElement.animate(
             [
@@ -108,55 +76,55 @@ export default function Header(): React.JSX.Element {
               { "--reveal-radius": `${targetRadius}px` },
             ] as unknown as Keyframe[],
             {
-              duration: 750,
+              duration: 520,
               easing: "cubic-bezier(0.22, 1, 0.36, 1)",
               pseudoElement: "::view-transition-new(root)",
             }
           );
         } catch {
-          // CSS fallback via @keyframes theme-circular-reveal handles it automatically
+          // Handled by CSS animation @keyframes theme-circular-reveal
         }
-      });
 
-      transition.finished.finally(() => {
-        document.documentElement.classList.remove("view-transition-circular");
+        // 2. Hardware-accelerated soft smoky/pale matte halo ring tracking the leading edge
+        const halo = document.createElement("div");
+        const baseSize = 120;
+        halo.className = "matte-halo-ring";
+        halo.style.left = `${x - baseSize / 2}px`;
+        halo.style.top = `${y - baseSize / 2}px`;
+        halo.style.width = `${baseSize}px`;
+        halo.style.height = `${baseSize}px`;
+        // Soft smoky grayish / pale matte haze ("dhushor, fekashe")
+        halo.style.boxShadow =
+          "0 0 55px 25px rgba(148, 163, 184, 0.35), inset 0 0 40px 20px rgba(100, 116, 139, 0.25)";
+        halo.style.border = "1.5px solid rgba(203, 213, 225, 0.3)";
+        halo.style.filter = "blur(12px)";
+        halo.style.opacity = "0.9";
+
+        document.body.appendChild(halo);
+
+        const scaleTarget = (targetRadius * 2) / baseSize;
+
+        // Animate solely via transform & opacity on GPU compositor thread at 60-120 FPS
+        const haloAnim = halo.animate(
+          [
+            { transform: "translateZ(0) scale(0)", opacity: 0.9 },
+            { transform: `translateZ(0) scale(${scaleTarget})`, opacity: 0 },
+          ],
+          {
+            duration: 520,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            fill: "forwards",
+          }
+        );
+
+        haloAnim.onfinish = () => {
+          if (halo.parentNode) {
+            halo.parentNode.removeChild(halo);
+          }
+        };
       });
     } else {
-      // Smooth expanding feathered circular ripple overlay for browsers without View Transitions
-      const targetBg = isCurrentlyLight ? "#0d041a" : "#f8fafc";
-      const size = Math.ceil(targetRadius * 2);
-
-      const ripple = document.createElement("div");
-      ripple.className = "theme-ripple-overlay";
-      ripple.style.position = "fixed";
-      ripple.style.left = `${x - size / 2}px`;
-      ripple.style.top = `${y - size / 2}px`;
-      ripple.style.width = `${size}px`;
-      ripple.style.height = `${size}px`;
-      ripple.style.borderRadius = "50%";
-      ripple.style.background = `radial-gradient(circle, ${targetBg} 0%, ${targetBg} 88%, transparent 100%)`;
-      ripple.style.filter = "blur(18px)";
-      ripple.style.pointerEvents = "none";
-      ripple.style.zIndex = "999999";
-      ripple.style.transform = "scale(0)";
-      ripple.style.transition = "transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 250ms ease 500ms";
-      ripple.style.willChange = "transform, opacity";
-
-      document.body.appendChild(ripple);
-
-      requestAnimationFrame(() => {
-        ripple.style.transform = "scale(1)";
-      });
-
-      setTimeout(() => {
-        applyThemeChange();
-        ripple.style.opacity = "0";
-        setTimeout(() => {
-          if (ripple.parentNode) {
-            ripple.parentNode.removeChild(ripple);
-          }
-        }, 300);
-      }, 400);
+      applyThemeChange();
     }
   };
 
