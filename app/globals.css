@@ -245,3 +245,434 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
+
+/* ==========================================================================
+   LIGHT MODE THEME SYSTEM
+   Ultra-clean, modern high-contrast frosted glass light theme
+   Zero breakage to dark mode (scoped strictly under html.light)
+   ========================================================================== */
+
+html.light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  color-scheme: light;
+}
+
+html.light ::selection {
+  background-color: rgba(168, 85, 247, 0.25) !important;
+  color: #0f172a !important;
+}
+
+html.light body,
+html.light main {
+  background-color: #f8fafc !important;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(168, 85, 247, 0.06) 0px, transparent 55%),
+    radial-gradient(at 85% 85%, rgba(6, 182, 212, 0.06) 0px, transparent 55%),
+    radial-gradient(at 50% 50%, rgba(241, 245, 249, 0.85) 0px, transparent 100%) !important;
+  color: #0f172a !important;
+}
+
+/* ==========================================================================
+   CIRCULAR REVEAL VIEW TRANSITIONS (Icon-Originating Matte / Misty Wave)
+   Expands in a soft, feathered circular wave from the clicked icon
+   ========================================================================== */
+
+@property --reveal-radius {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 99999;
+  -webkit-mask-image: radial-gradient(
+    circle var(--reveal-radius, 0px) at var(--click-x, 50%) var(--click-y, 0px),
+    #000 0%,
+    #000 max(0px, calc(var(--reveal-radius, 0px) - 95px)),
+    rgba(0, 0, 0, 0.75) max(0px, calc(var(--reveal-radius, 0px) - 55px)),
+    rgba(0, 0, 0, 0.3) max(0px, calc(var(--reveal-radius, 0px) - 20px)),
+    transparent var(--reveal-radius, 0px)
+  );
+  mask-image: radial-gradient(
+    circle var(--reveal-radius, 0px) at var(--click-x, 50%) var(--click-y, 0px),
+    #000 0%,
+    #000 max(0px, calc(var(--reveal-radius, 0px) - 95px)),
+    rgba(0, 0, 0, 0.75) max(0px, calc(var(--reveal-radius, 0px) - 55px)),
+    rgba(0, 0, 0, 0.3) max(0px, calc(var(--reveal-radius, 0px) - 20px)),
+    transparent var(--reveal-radius, 0px)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: theme-circular-reveal 750ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes theme-circular-reveal {
+  0% {
+    --reveal-radius: 0px;
+  }
+  100% {
+    --reveal-radius: var(--click-radius, 160vmax);
+  }
+}
+
+/* Button Shockwave Ripple Ring on Click */
+@keyframes button-ripple-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.8), inset 0 0 10px rgba(168, 85, 247, 0.6);
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+    box-shadow: 0 0 35px 20px rgba(0, 245, 255, 0), inset 0 0 20px rgba(168, 85, 247, 0);
+  }
+}
+
+.animate-ripple-ring {
+  animation: button-ripple-ring 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Icon Switch Animation */
+@keyframes icon-fade-in-spin {
+  0% {
+    opacity: 0;
+    transform: rotate(-100deg) scale(0.6);
+  }
+  60% {
+    transform: rotate(10deg) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.animate-icon-switch {
+  animation: icon-fade-in-spin 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth full-page transition class active during theme switch */
+html.theme-transition,
+html.theme-transition body,
+html.theme-transition main,
+html.theme-transition header,
+html.theme-transition footer,
+html.theme-transition section,
+html.theme-transition div:not([class*="animate-"]),
+html.theme-transition p,
+html.theme-transition h1,
+html.theme-transition h2,
+html.theme-transition h3,
+html.theme-transition h4,
+html.theme-transition span,
+html.theme-transition a,
+html.theme-transition button,
+html.theme-transition svg {
+  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Base smooth transitions for key structural elements */
+body, main, header, footer, section, .liquid-glass, .liquid-glass-card, .liquid-glass-pill, .skill-card-inner {
+  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header & Navigation in Light Mode */
+html.light header {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 4px 20px 0 rgba(15, 23, 42, 0.05) !important;
+}
+
+html.light .site-logo-img {
+  filter: brightness(0.12) contrast(1.25);
+}
+
+html.light header nav a:not(.theme-toggle-btn) {
+  color: #334155 !important;
+  background: rgba(241, 245, 249, 0.8) !important;
+  border-color: rgba(203, 213, 225, 0.85) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light header nav a:not(.theme-toggle-btn):hover {
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.35), 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(203, 213, 225, 0.9) !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light .theme-toggle-btn:hover {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.35), 0 2px 8px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Glassmorphism Cards in Light Mode */
+html.light .liquid-glass {
+  background: rgba(255, 255, 255, 0.84) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 10px 30px 0 rgba(15, 23, 42, 0.06), 0 2px 6px 0 rgba(15, 23, 42, 0.03), inset 0 1px 2px 0 rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+html.light .liquid-glass-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 10px 30px 0 rgba(15, 23, 42, 0.05), inset 0 1px 2px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light .liquid-glass-card:hover {
+  background: #ffffff !important;
+  border-color: rgba(168, 85, 247, 0.45) !important;
+  box-shadow: 0 16px 40px 0 rgba(15, 23, 42, 0.08), 0 0 20px rgba(168, 85, 247, 0.15) !important;
+}
+
+html.light .liquid-glass-pill {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 2px 10px 0 rgba(15, 23, 42, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95) !important;
+  color: #1e293b !important;
+}
+
+/* Typography across all sections in Light Mode */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4 {
+  color: #0f172a !important;
+}
+
+html.light p {
+  color: #334155;
+}
+
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-white\/95,
+html.light .text-white\/90 {
+  color: #1e293b !important;
+}
+
+html.light .text-white\/80,
+html.light .text-white\/75,
+html.light .text-white\/70 {
+  color: #475569 !important;
+}
+
+html.light .text-white\/50,
+html.light .text-white\/40 {
+  color: #64748b !important;
+}
+
+/* Banner Section Specifics in Light Mode */
+html.light #home [data-battle-card="photo-card"] > div:last-child {
+  background-color: #ffffff !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+}
+
+html.light #home [data-battle-card="photo-card"] .bg-gradient-to-t {
+  opacity: 0.25 !important;
+}
+
+html.light #home [data-battle-card="photo-card"] .liquid-glass-pill {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(6, 182, 212, 0.45) !important;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light #home [data-battle-card="photo-card"] .liquid-glass-pill span.text-white {
+  color: #0f172a !important;
+}
+
+html.light #home a[download] {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #0891b2 !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 4px 18px rgba(6, 182, 212, 0.22) !important;
+}
+
+html.light #home a[download]:hover {
+  background: #ffffff !important;
+  box-shadow: 0 6px 24px rgba(6, 182, 212, 0.4) !important;
+}
+
+html.light #home a[href="#contact"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #7c3aed !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.18) !important;
+}
+
+html.light #home a[href="#contact"]:hover {
+  background: #ffffff !important;
+  box-shadow: 0 6px 24px rgba(168, 85, 247, 0.35) !important;
+}
+
+/* Skills Section in Light Mode */
+html.light .skill-filter-btn {
+  background: rgba(241, 245, 249, 0.9) !important;
+  border-color: rgba(203, 213, 225, 0.85) !important;
+  color: #334155 !important;
+}
+
+html.light .skill-filter-btn:hover {
+  color: #0f172a !important;
+  border-color: #06b6d4 !important;
+  background: #ffffff !important;
+}
+
+html.light .skill-filter-btn-active {
+  background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.35) !important;
+}
+
+html.light .skill-filter-btn-active span {
+  color: #ffffff !important;
+}
+
+html.light .skill-card-inner {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 4px 14px 0 rgba(15, 23, 42, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light .skill-card-inner:hover {
+  background: #ffffff !important;
+  box-shadow: 0 8px 24px 0 rgba(15, 23, 42, 0.09), 0 0 18px rgba(6, 182, 212, 0.25) !important;
+}
+
+html.light .skill-card-inner h3 {
+  color: #0f172a !important;
+}
+
+html.light .skill-card-inner p {
+  color: #64748b !important;
+}
+
+/* Projects Section in Light Mode */
+html.light #lab [data-battle-card="project-card"] span {
+  background: rgba(241, 245, 249, 0.95) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+  color: #334155 !important;
+}
+
+html.light #lab a[target="_blank"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+}
+
+html.light #lab a[target="_blank"]:hover {
+  color: #0891b2 !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.35) !important;
+}
+
+/* Education Section in Light Mode */
+html.light #education .border-white\/10 {
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+html.light #education .border-white\/20 {
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+/* Footer Section in Light Mode */
+html.light footer [data-battle-card="contact-card"] > div:last-child {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light footer .border-white\/10,
+html.light footer .border-white\/\[0\.08\] {
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+html.light footer a[title="Click to write an email directly"] {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.2) !important;
+}
+
+html.light footer a[title="Click to write an email directly"] span.text-white {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+html.light footer a[title="Click to write an email directly"] .text-cyan-300 {
+  color: #0891b2 !important;
+}
+
+html.light footer .liquid-glass {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light footer a[target="_blank"].rounded-full {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+  color: #1e293b !important;
+}
+
+html.light footer a[target="_blank"].rounded-full:hover {
+  background: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light footer .footer-glowing-name {
+  background: linear-gradient(
+    90deg,
+    #94a3b8 0%,
+    #64748b 25%,
+    #0284c7 44%,
+    #0f172a 50%,
+    #7c3aed 56%,
+    #64748b 75%,
+    #94a3b8 100%
+  ) !important;
+  background-size: 250% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light footer .bg-black\/80 {
+  background-color: #0f172a !important;
+}
+
+/* Liquid Cursor Background Tracking in Light Mode */
+html.light .fixed.inset-0.pointer-events-none > div {
+  opacity: 0.22 !important;
+  mix-blend-mode: multiply !important;
+}
+

@@ -380,7 +380,7 @@ function SkillCard({
 
       {/* Inner Liquid Glass Card Body */}
       <div
-        className="relative z-10 rounded-[11px] bg-[#120722]/95 backdrop-blur-2xl bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.015] px-3 sm:px-3.5 py-1.5 h-full w-full flex items-center gap-2.5 sm:gap-3 border border-white/10 transition-all duration-300 group-hover:border-white/40 group-hover:shadow-[0_8px_24px_0_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.3)] group-hover:-translate-y-0.5 overflow-hidden"
+        className="skill-card-inner relative z-10 rounded-[11px] bg-[#120722]/95 backdrop-blur-2xl bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.015] px-3 sm:px-3.5 py-1.5 h-full w-full flex items-center gap-2.5 sm:gap-3 border border-white/10 transition-all duration-300 group-hover:border-white/40 group-hover:shadow-[0_8px_24px_0_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.3)] group-hover:-translate-y-0.5 overflow-hidden"
       >
         {/* Full Box Internal Brilliant Ambient Glow in Logo Color */}
         <div
@@ -477,9 +477,9 @@ export default function Skills(): React.JSX.Element {
                 key={option.value}
                 type="button"
                 onClick={() => setActiveFilter(option.value)}
-                className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center gap-2 ${
+                className={`skill-filter-btn relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center gap-2 ${
                   isActive
-                    ? "bg-white/[0.14] text-white border border-cyan-400 shadow-[0_0_20px_rgba(0,245,255,0.45),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105"
+                    ? "skill-filter-btn-active bg-white/[0.14] text-white border border-cyan-400 shadow-[0_0_20px_rgba(0,245,255,0.45),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105"
                     : "bg-white/[0.04] text-white/70 border border-white/10 hover:border-white/30 hover:text-white hover:bg-white/[0.08]"
                 }`}
               >
