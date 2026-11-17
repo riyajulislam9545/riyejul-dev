@@ -346,6 +346,8 @@ export default function CardBattleMischief(): React.JSX.Element | null {
   const getAllCards = useCallback((): HTMLElement[] => {
     if (typeof window === "undefined") return [];
     return Array.from(document.querySelectorAll<HTMLElement>("[data-battle-card]")).filter((el) => {
+      // Exclude the skills section explicitly so the battle animation never targets it
+      if (el.closest("#skills") || el.getAttribute("data-battle-card") === "skill-card") return false;
       const rect = el.getBoundingClientRect();
       return rect.width >= TARGET_DISTANCE + CAT_W && rect.height > 20 && el.offsetParent !== null;
     });

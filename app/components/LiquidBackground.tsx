@@ -24,13 +24,25 @@ export default function LiquidBackground(): React.JSX.Element {
     let idleAngle = 0;
 
     const handlePointerMove = (e: MouseEvent | TouchEvent) => {
-      isMoving = true;
       if ("clientX" in e) {
         targetX = e.clientX;
         targetY = e.clientY;
       } else if (e.touches && e.touches[0]) {
         targetX = e.touches[0].clientX;
         targetY = e.touches[0].clientY;
+      }
+
+      if (!isMoving) {
+        x1 = targetX;
+        y1 = targetY;
+        isMoving = true;
+      }
+
+      // Zero-latency instant update directly on pointer event for 1:1 hardware responsiveness
+      x1 = targetX;
+      y1 = targetY;
+      if (orb1Ref.current) {
+        orb1Ref.current.style.transform = `translate3d(${targetX - 280}px, ${targetY - 280}px, 0)`;
       }
     };
 
@@ -39,22 +51,30 @@ export default function LiquidBackground(): React.JSX.Element {
 
     // Smooth animation loop with spring-like liquid delay
     const animate = () => {
-      // If idle, gently float in an organic infinity pattern
-      if (!isMoving) {
+      if (isMoving) {
+        // Direct zero-latency lock on primary glow
+        x1 = targetX;
+        y1 = targetY;
+
+        // Ultra-responsive, high-speed trailing auras (zero noticeable latency)
+        x2 += (targetX - x2) * 0.55;
+        y2 += (targetY - y2) * 0.55;
+
+        x3 += (targetX - x3) * 0.38;
+        y3 += (targetY - y3) * 0.38;
+      } else {
+        // If idle, gently float in an organic infinity pattern
         idleAngle += 0.015;
         targetX = window.innerWidth / 2 + Math.cos(idleAngle) * 200;
         targetY = window.innerHeight / 2 + Math.sin(idleAngle * 2) * 120;
+
+        x1 += (targetX - x1) * 0.15;
+        y1 += (targetY - y1) * 0.15;
+        x2 += (targetX - x2) * 0.10;
+        y2 += (targetY - y2) * 0.10;
+        x3 += (targetX - x3) * 0.08;
+        y3 += (targetY - y3) * 0.08;
       }
-
-      // Smooth lag / fluid drag effect (different speeds create chromatic liquid separation)
-      x1 += (targetX - x1) * 0.08;
-      y1 += (targetY - y1) * 0.08;
-
-      x2 += (targetX - x2) * 0.05;
-      y2 += (targetY - y2) * 0.05;
-
-      x3 += (targetX - x3) * 0.035;
-      y3 += (targetY - y3) * 0.035;
 
       if (orb1Ref.current) {
         orb1Ref.current.style.transform = `translate3d(${x1 - 280}px, ${y1 - 280}px, 0)`;

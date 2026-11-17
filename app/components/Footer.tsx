@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface SocialLink {
   name: string;
@@ -81,6 +81,27 @@ export default function Footer(): React.JSX.Element {
   const mailtoUrl = `mailto:${email}?subject=Project%20Inquiry%20-%20Md%20Riyajul%20Islam`;
 
   const [copied, setCopied] = useState(false);
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
+  const [isHoveringName, setIsHoveringName] = useState(false);
+  const nameAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const handleSpotlightMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!nameAreaRef.current) return;
+    const rect = nameAreaRef.current.getBoundingClientRect();
+    setSpotlightPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!nameAreaRef.current || e.touches.length === 0) return;
+    const rect = nameAreaRef.current.getBoundingClientRect();
+    setSpotlightPos({
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top,
+    });
+  };
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -239,19 +260,51 @@ export default function Footer(): React.JSX.Element {
           </div>
         </div>
 
-        {/* Massive Name Display with Dynamic Sweeping Glow & Shadow */}
-        <div className="relative w-full overflow-visible select-none pointer-events-none mt-12 sm:mt-16 mb-6 text-center flex items-center justify-center">
-          {/* Synchronized Ambient Soft Glow drifting behind text */}
+        {/* Interactive Spotlight Reveal Name Display */}
+        <div
+          ref={nameAreaRef}
+          onMouseEnter={(e) => {
+            setIsHoveringName(true);
+            handleSpotlightMove(e);
+          }}
+          onMouseLeave={() => setIsHoveringName(false)}
+          onMouseMove={handleSpotlightMove}
+          onTouchStart={(e) => {
+            setIsHoveringName(true);
+            handleTouchMove(e);
+          }}
+          onTouchEnd={() => setIsHoveringName(false)}
+          onTouchMove={handleTouchMove}
+          className="relative w-full py-8 sm:py-14 my-6 sm:my-8 text-center flex items-center justify-center cursor-crosshair select-none overflow-hidden"
+        >
+          {/* Dynamic Cursor Spotlight Glow Aura */}
           <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden="true"
-          >
-            <div className="w-[38%] h-[85%] rounded-full bg-gradient-to-r from-cyan-400/25 via-purple-500/30 to-pink-500/20 blur-[60px] animate-footer-ambient-sweep" />
-          </div>
+            className="absolute pointer-events-none rounded-full blur-[65px] transition-opacity duration-500 -translate-x-1/2 -translate-y-1/2"
+            style={{
+              left: `${spotlightPos.x}px`,
+              top: `${spotlightPos.y}px`,
+              width: "420px",
+              height: "280px",
+              background:
+                "radial-gradient(circle, rgba(0, 245, 255, 0.28) 0%, rgba(192, 132, 252, 0.25) 45%, transparent 75%)",
+              opacity: isHoveringName ? 1 : 0,
+            }}
+          />
 
-          <h2 className="relative inline-block text-[13.5vw] sm:text-[14.5vw] md:text-[15.5vw] lg:text-[11rem] xl:text-[12.5rem] font-black tracking-tighter leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
-            RIYAJUL
-          </h2>
+          {/* Masked Text: Normally invisible, softly/dimly revealed around pointer */}
+          <div
+            className="relative w-full transition-opacity duration-500 pointer-events-none"
+            style={{
+              opacity: isHoveringName ? 0.92 : 0,
+              maskImage: `radial-gradient(circle 280px at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.12) 75%, transparent 100%)`,
+              WebkitMaskImage: `radial-gradient(circle 280px at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.12) 75%, transparent 100%)`,
+            }}
+          >
+            <h2 className="relative inline-block text-[13.5vw] sm:text-[14.5vw] md:text-[15.5vw] lg:text-[11.5rem] xl:text-[13rem] font-black tracking-tighter leading-none footer-glowing-name uppercase select-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+              RIYAJUL
+            </h2>
+          </div>
         </div>
 
         {/* Footer Bottom Bar matching Screenshot */}
